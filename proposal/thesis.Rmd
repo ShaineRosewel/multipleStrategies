@@ -1,0 +1,98 @@
+---
+number_sections: true
+fig_caption: yes
+output:
+  bookdown::pdf_document2:
+    toc: false
+  citation_package: natbib
+fontsize: 12pt 
+indent: true
+header-includes:
+- \usepackage{amsmath}
+- \numberwithin{equation}{section}
+- \usepackage{setspace}\doublespacing
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{indentfirst}
+papersize: a4
+bibliography: C:/Users/shain/Desktop/multipleStrategies/proposal/ref.bib
+biblio-style: apalike
+csl: C:/Users/shain/Desktop/multipleStrategies/proposal/harvard-educational-review.csl
+---
+
+\title{\vspace{20mm}TITLE HERE}
+\maketitle
+\thispagestyle{empty} 
+\vspace*{90px}
+\begin{center}
+A Thesis Proposal Presented to\\
+The Faculty of the School of Statistics\\
+University of the Philippines, Diliman\\
+\vspace*{100px}
+In Partial Fulfillment\\
+of the Requirements for the Degree of\\
+Master of Science in Statistics\\
+2nd Semester A.Y. 20**-20**
+
+\vspace*{90px}
+by\\
+Shaine Rosewel P. Matala
+\end{center}
+
+
+\newpage
+
+
+
+# Abstract {-}
+
+```{r, child = "child/00_abstract.Rmd"}
+
+```
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+# Introduction
+
+```{r, child = "child/01_introduction.Rmd"}
+
+```
+
+# Literature Review
+
+```{r, child = "child/02_rrl.Rmd"}
+
+```
+
+# Methodology
+
+```{r, child = "child/03_methodology.Rmd"}
+
+```
+
+# Results
+
+```{r, child = "child/04_results.Rmd"}
+hist(rnorm(10000))
+```
+
+# Discussion
+
+```{r, child = "child/05_discussion.Rmd"}
+
+```
+
+# References
+
+<div id="refs"></div>
+
+# Appendices {-}
+
+```{r, child = "child/06_appendix.Rmd"}
+
+```
