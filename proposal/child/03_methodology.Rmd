@@ -1,0 +1,7 @@
+## Proposed Model
+
+## Estimation Procedure
+
+## Simulation Design
+
+## Real Data Application
