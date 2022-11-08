@@ -1,0 +1,95 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Multiple strategy
+
+$$
+\boldsymbol{\phi} = [ \boldsymbol{\delta}^T, \boldsymbol{\lambda}^T ]^T
+\\
+\boldsymbol{\delta}^T = [h_j, \omega_j, g_j,\varepsilon_j], \ \text{vector of structural parameters (item parameters)}
+\\
+\boldsymbol{\lambda}, \ \text{joint attribute distribution parameters }
+\\
+\boldsymbol{\alpha}_i, \ \text{incidental parameters}
+$$ 
+
+
+GDINA model is estimated by maximizing the marginalized likelihood via the EM algorithm. This is useful with missing data problems. In this context, 
+
+$$
+\mathbf{y}_i, \ \text{incomplete data}
+\\
+\boldsymbol{\alpha}_i, \ \text{missing for indiv } i
+\\
+\mathbf{x}_i = [\mathbf{y}_i^T, \boldsymbol{\alpha}_i^T]^T, \ \text{complete data}
+$$
+
+Goal of EM algorithm is to find the maxima of the incomplete data likelihood indirectly by maximizing complete data likelihood iteratively.
+
+$\boldsymbol{\phi}$ can be estimated using the marginal maximum likelihood estimation via EM algorithm. That is, instead of finding $\boldsymbol{\phi}$ that directly maximizes (directly maximizes the change of observing such data that was observed)
+
+$$
+L(\mathbf{Y}) = \prod^N_{i=1} L(\mathbf{y}_i), \ \text{where}
+\\ 
+L(\mathbf{y}_i) = \sum_c \pi_c \prod^J_j P_j(\boldsymbol{\alpha}_c)^{y_{ij}}
+\left[1 - P_j(\boldsymbol{\alpha}_c)\right]^{1-y_{ij}}
+$$
+
+
+the EM algorithm maximizes the complete data log-likelihood iteratively in 2 steps:
+
+1. E-step: calculate the Q-function - the expected log-likelihood of the complete data conditional on the **observed data** and **current parameter estimates**. Below is the Q-function at the $(t+1)^{th}$ iteration.
+
+$$
+Q(\boldsymbol{\phi} \mid \boldsymbol{\phi}') 
+= \sum^{2^K}_{c = 1} n_c \log {(\pi_c)} +
+\sum^J_{j = 1} \sum^{2^K}_{c=1} 
+\Bigg[ r_{jc} \log{\left[ P_j(\boldsymbol{\alpha}_c)\right]}  +
+(n_c - r_{jc}) \log{ \left[ 1 - P_j(\boldsymbol {\alpha}_c)\right]}
+\Bigg]
+$$
+=======================
+
+
+$$
+IRF = P_j(\boldsymbol{\alpha_c}) = \sum^{M_j}_{m = 1} P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m) P_j(m \mid \boldsymbol{\alpha}_c)
+$$
+
+$$
+P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m) = \begin{cases}
+    h_j,            & \eta_j = 1, \gamma_j = 0 \\
+    \omega_j,       & \eta_j = 1, \gamma_j = 1 \\
+    g_j,            & \eta_j = 0, \gamma_j = 0 \\
+    \varepsilon_j,  & \eta_j = 0, \gamma_j = 1 \\
+  \end{cases} = h_{j}^{\eta_{ij}(1-\gamma_{ij})} \omega_j^{\eta_{ij}\gamma_{ij}}g_j^{(1-\eta_{ij})(1-\gamma_{ij})}\epsilon_j^{(1-\eta_{ij})\gamma_{ij}}
+$$
+
+*if item involves multiple strategies, then means, iba iba required q elements sa vector - item vould possibly measure misconception, depending on the answering strategy*
+
+$$
+P_j(m \mid \boldsymbol{\alpha}_c) = \frac{P(Y_j = 1 \mid \boldsymbol{\alpha}_c, m)^s}{\sum^{M_j}_{m=1} P(Y_j = 1 \mid \boldsymbol{\alpha}_c, m)^s}
+$$
+
+
+
+===========================
+
+
+
+
+
+For this step, we get the initial estimate for 
+
+$$
+\boldsymbol{\alpha}_i
+$$ 
+and assume the prior values for the structural parameters.
+
+With this estimate, we are also able to calculate $n_c and r_{jc}$ in the e-step.
+
+$n_c$: expected number of individuals in latent class $c$
+$r_{jc}$: expected number of individuals in latent class $c$ who answer item $j$ correctly
+
+

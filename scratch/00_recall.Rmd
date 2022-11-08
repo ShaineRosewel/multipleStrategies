@@ -1,0 +1,50 @@
+---
+title: "Recall"
+author: "Shaine Rosewel P. Matala"
+date: "2022-11-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Terms:
+
+* attribute
+* MS-DINA: assumes that all items involve the same number of strategies; to answer an item correctly, students are expected to master all attributes required by at least one strategy; assumes that item parameters across different strategies are the same and that the use of each strategy is equally difficult
+
+# Cognitive diagnosis models for multiple strategies
+
+**Problem addressed:**
+
+* Most CDMs assume that all students adopt the same strategy when approaching 
+problems in an assessment, which may not be the case in practice
+* Ignoring multiple strategies and fitting data using single-strategy CDMs could result in model misspecifications and an inadequate model-data fit, which, in turn, causes concerns as to the validity of inferences.
+
+
+**Solution proposed:**
+
+* Provides a unified framework to accommodate various condensation rules (e.g.,
+conjunctive, disjunctive, and additive) and different strategy selection approaches (i.e., probability-matching, over-matching, and maximizing)
+* develop a generalized multiple-strategy CDM for dichotomous response data, which substantially extends the MS-DINA model to provide a more flexible framework for modelling students’ responses under multiple strategies. The proposed model uses several popular single-strategy dichotomous CDMs as building blocks, and takes various strategy selection approaches into consideration.
+
+
+
+**Estimation procedure:**
+
+Model parameters are estimated using the marginal maximum likelihood estimation
+via expectation-maximization algorithm.
+
+**Major CDM components**
+
+* Q-matrix ($J \times K$): does item $j$ measure item $k$
+* $K$ binary attributes yield $c = 2^k$ latent classes (unique attribute profile)
+* condensation rule: tells what attributes I need to possess to get the item correct
+
+
+
+
+
+
+

@@ -1,0 +1,125 @@
+---
+output: html_notebook
+---
+
+# Misconception
+
+There are 4 parameters for the SISM model: 
+
+* $h_j$: success probability when
+  - all required attributes are possessed ($\eta_j = 1$) and
+  - no misconception ($\gamma_j = 0$) is possessed.
+* $\omega_j$: success probability when 
+  - all required attributes are possessed ($\eta_j = 1$) but
+  - at least one misconception ($\gamma_j = 1$) is possessed.
+* $g_j$: success probability when 
+  - not all required attributes are possessed ($\eta_j = 0$) and
+  - no misconception ($\gamma_j = 0$) is possessed.
+* $\varepsilon_j$: success probability when     \omega_j,       & \eta_j = 1, \gamma_j = 1 \\
+
+  - not all required attributes are possessed ($\eta_j = 0$) and
+  - at least one misconception ($\gamma_j = 1$) is possessed.
+
+If no misconceptions are considered in the Q-matrix, number of parameters is reduced to 2 - namely, $h_j$ and $g_j$ - the slip and guess parameters in the DINA model, respectively.
+
+$$
+P_j(\boldsymbol{\alpha}_c) = \begin{cases}
+    h_j,            & \eta_j = 1, \gamma_j = 0 \\
+    \omega_j,       & \eta_j = 1, \gamma_j = 1 \\
+    g_j,            & \eta_j = 0, \gamma_j = 0 \\
+    \varepsilon_j,  & \eta_j = 0, \gamma_j = 1 \\
+  \end{cases}
+$$
+
+Estimation is similar to that of DINA model.
+
+
+# Multiple strategy
+
+Let $\boldsymbol{\phi} = [ \boldsymbol{\delta}^T, \boldsymbol{\lambda}^T ]^T$ denote a   
+
+* $\boldsymbol{\delta}$: vector of structural parameters (item parameters) $\boldsymbol{\delta}^T = [h_j, \omega_j, g_j,\varepsilon_j]$  
+* $\boldsymbol{\lambda}$: joint attribute distribution parameters  
+
+Additionally, we have incidental parameters: $\boldsymbol{\alpha}_i$
+
+GDINA model is estimated by maximizing the marginalized likelihood via the EM algorithm. This is useful with missing data problems. In this context, $\mathbf{y}_i$ is the incomplete data, with $\boldsymbol{\alpha}_i$ missing, for individual $i$. The complete data is then $\mathbf{x}_i = [\mathbf{y}_i^T, \boldsymbol{\alpha}_i^T]^T$.
+
+Goal of EM algorithm is to find the maxima of the incomplete data likelihood indirectly by maximizing complete data likelihood iteratively.
+
+$\boldsymbol{\phi}$ can be estimated using the marginal maximum likelihood estimation via EM algorithm. That is, instead of finding $\boldsymbol{\phi}$ that directly maximizes
+
+$$
+L(\mathbf{Y}) = \prod^N_{i=1} L(\mathbf{y}_i),
+\\
+L(\mathbf{y}_i) = \sum_c \pi_c \prod^J_j P_j(\boldsymbol{\alpha}_c)^{y_{ij}}
+\left[1 - P_j(\boldsymbol{\alpha}_c)\right]^{1-y_{ij}}
+$$
+
+the EM algorithm maximizes the complete data log-likelihood iteratively in 2 steps:
+
+1. E-step: calculate the Q-function - the expected log-likelihood of the complete data conditional on the **observed data** and **current parameter estimates**. Below is the Q-function at the $(t+1)^{th}$ iteration. (<span style="color:blue">For this step, we get the initial estimate for $\boldsymbol{\alpha}_i$ and assume the prior values for the structural parameters.</span>)
+
+$$
+Q(\boldsymbol{\phi} \mid \boldsymbol{\phi}') 
+= \sum^{2^K}_{c = 1} n_c \log {(\pi_c)} +
+\sum^J_{j = 1} \sum^{2^K}_{c=1} 
+\Bigg[ r_{jc} \log{\left[ P_j(\boldsymbol{\alpha}_c)\right]}  +
+(n_c - r_{jc}) \log{ \left[ 1 - P_j(\boldsymbol {\alpha}_c)\right]}
+\Bigg]
+$$
+
+In the E-step, $n_c and r_{jc}$ are calculated.
+
+$n_c$: expected number of individuals in latent class $c$
+$r_{jc}$: expected number of individuals in latent class $c$ who answer item $j$ correctly
+
+$$
+n_c = \sum_{i = 1}^{N} P(\boldsymbol{\alpha}_c \mid \mathbf{y}_i, \boldsymbol{\phi}')
+\\
+r_{jc} = \sum_{i = 1}^{N} y_{ij} P_j(\boldsymbol{\alpha}_c \mid \mathbf{y}_i, \boldsymbol{\phi}')
+$$
+
+$P(\boldsymbol{\alpha}_c \mid \mathbf{y}_i, \boldsymbol{\phi}')$: posterior probability of individual $i$ being assigned to latent class $c$, calculated with Bayes rule.
+
+$$
+P(\boldsymbol{\alpha}_c \mid \mathbf{y}_i, \boldsymbol{\phi}') 
+= \frac
+{P(\mathbf{y}_i \mid \boldsymbol{\alpha}_c, \boldsymbol{\phi}') \pi_c}
+{\sum_{c} P(\mathbf{y}_i \mid \boldsymbol{\alpha}_c, \boldsymbol{\phi}') \pi_c}
+$$
+
+Items are independent and are binary response.
+
+$$
+P(\mathbf{y}_i \mid \boldsymbol{\alpha}_c, \boldsymbol{\phi}') 
+= \prod^J_{j=1} \big[ P(Y_{ij} = 1 \mid \boldsymbol{\alpha}_c, \boldsymbol{\phi}')  \big]^{y_{ij}}
+\big[ 1-  P(Y_{ij} = 1 \mid \boldsymbol{\alpha}_c, \boldsymbol{\phi}')  \big]^{1 - y_{ij}}
+$$
+
+2. M-step: maximize $Q(\boldsymbol{\phi} \mid \boldsymbol{\phi}')$ with respect to $\boldsymbol{\phi}$
+
+(<span style="color:blue">For this step, we fix the initial estimate for $\boldsymbol{\alpha}_i$ and estimate values for the structural parameters (by maximizing Q - i.e., take the gradient, equate to zero and compute for the new values)</span>)
+
+$$
+Q(\boldsymbol{\phi} \mid \boldsymbol{\phi}') 
+= \sum^{2^K}_{c = 1} n_c \log {(\pi_c)} +
+\sum^J_{j = 1} \sum^{2^K}_{c=1} 
+\Bigg[ r_{jc} \log{\left[ P_j(\boldsymbol{\alpha}_c)\right]}  +
+(n_c - r_{jc}) \log{ \left[ 1 - P_j(\boldsymbol {\alpha}_c)\right]}
+\Bigg]
+
+\\
+
+
+Q(\boldsymbol{\phi} \mid \boldsymbol{\phi}') 
+= \sum^{2^K}_{c = 1} n_c \log {(\pi_c)} +
+\sum^J_{j = 1} \sum^{2^K}_{c=1} 
+\Bigg[ r_{jc} \log{\left[ P_j(\boldsymbol{\alpha}_c)\right]}  +
+(n_c - r_{jc}) \log{ \left[ 1 - P_j(\boldsymbol {\alpha}_c)\right]}
+\Bigg]
+$$
+
+
+
+

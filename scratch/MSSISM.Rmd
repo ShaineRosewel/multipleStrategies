@@ -1,0 +1,122 @@
+---
+title: "Multiple Strategies (MS) and Simultaneously Identifying Skills & Misconceptions (SISM)"
+date: "4/12/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Multiple Strategies (MS) part
+
+Suppose that item $j$ has $M_j$ strategies. Each of the strategy involves a unique set of the $K$ attributes. Different items may have different number of strategies. Different strategies correspond to distinct q-vectors. Let $\mathbf{q}_j^m = \{q_{jk}^m\}$ be the q-vector of item $j$ for strategy $m$.
+
+GMS-CDM defines the likelihood of observing response vector $\mathbf{y}_i$ for individual $i$ with attribute profile $\boldsymbol{\alpha}_c$ as
+
+$$
+L(\mathbf{y}_i) = \sum_c \pi_c \prod^J_j P_j(\boldsymbol{\alpha}_c)^{y_{ij}}
+\left[1 - P_j(\boldsymbol{\alpha}_c)\right]^{1-y_{ij}}
+$$
+
+
+$P_j(\boldsymbol{\alpha_c})$ is the IRF or the probability of successfully accomplishing item $j$ and is defined by the condensation rule. For GMS-CDM, 
+
+$$
+IRF = P_j(\boldsymbol{\alpha_c}) = \sum^{M_j}_{m = 1} P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m) P_j(m \mid \boldsymbol{\alpha}_c)
+$$
+
+## Simultaneously Identifying Skills & Misconceptions (SISM) part
+
+$P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m)$ is the strategy-specific IRF. For the purpose of this study, the IRF for SISM model is used.
+
+$$
+P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m) = h_{j}^{\eta_{ij}(1-\gamma_{ij})} \omega_j^{\eta_{ij}\gamma_{ij}}g_j^{(1-\eta_{ij})(1-\gamma_{ij})}\epsilon_j^{(1-\eta_{ij})\gamma_{ij}}
+$$
+
+where $\eta_{ij}$ and $\gamma_{ij}$ are deterministic latent response variables.
+
+$$
+\eta_{ij} = \prod^{K_s}_{k = 1} \alpha_{ik}^{q_{jk}}
+\  \text{and} \ 
+\gamma_{ij} = 1-\prod^{K}_{k = K_s + 1} (1 - \alpha_{ik})^{q_{jk}}
+$$
+
+There are 4 parameters for the SISM model: 
+
+* $h_j$: success probability when
+  - all required attributes are possessed ($\eta_j = 1$) and
+  - no misconception ($\gamma_j = 0$) is possessed.
+* $\omega_j$: success probability when 
+  - all required attributes are possessed ($\eta_j = 1$) but
+  - at least one misconception ($\gamma_j = 1$) is possessed.
+* $g_j$: success probability when 
+  - not all required attributes are possessed ($\eta_j = 0$) and
+  - no misconception ($\gamma_j = 0$) is possessed.
+* $\varepsilon_j$: success probability when
+  - not all required attributes are possessed ($\eta_j = 0$) and
+  - at least one misconception ($\gamma_j = 1$) is possessed.
+
+If no misconceptions are considered in the Q-matrix, number of parameters is reduced to 2 - namely, $h_j$ and $g_j$ - the slip and guess parameters in the DINA model, respectively. Note that the Q-matrix for the SISM model requires the specification of skills (first k columns of the Q-matrix) and the misconceptions (last 1-k columns of the Q-matrix) being measured.
+
+$$
+P(Y_{ij} = 1 \mid \boldsymbol{\alpha_c}, m) = \begin{cases}
+    h_j,            & \eta_j = 1, \gamma_j = 0 \\
+    \omega_j,       & \eta_j = 1, \gamma_j = 1 \\
+    g_j,            & \eta_j = 0, \gamma_j = 0 \\
+    \varepsilon_j,  & \eta_j = 0, \gamma_j = 1 \\
+  \end{cases}
+$$
+
+$P_j(m \mid \boldsymbol{\alpha}_c)$ is the probability of an individual with attribute profile $\boldsymbol{\alpha}_c)$ choosing strategy $m$ for item $j$.
+
+
+$$
+P_j(m \mid \boldsymbol{\alpha}_c) = \frac{P(Y_j = 1 \mid \boldsymbol{\alpha}_c, m)^s}{\sum^{M_j}_{m=1} P(Y_j = 1 \mid \boldsymbol{\alpha}_c, m)^s}
+$$
+
+where $s$ is the strategy selection parameter. 
+
+  * $s = 0$ means that all strategies have the same probability of being selected.
+  * $s = 1$: probability matching approach
+  * $s > 1$: overmatching approach
+  * $s \rightarrow + \infty$: maximizing approach
+
+### Strategy selection approaches (MS part)
+
+1. Maximizing approach. Choosing the strategy with the highest success probability to maximize the expected item score. Choose strategy A over B if success probabilities are 0.8 and 0.5, respectively.
+
+2. Probability matching approach. Choosing A over B when corresponding attached values are 0.8/(0.8 + 0.5) and 0.5/(0.8 + 0.5), respectively.
+
+3. Overmatching approach. Choosing A when corresponding value > 0.8/(0.8 + 0.5)
+
+
+## Estimation procedure
+
+1. E-step
+- calculate the Q-function - the expected log-likelihood of the complete data conditional on the observed data and current parameter estimates.
+
+- Take the prior
+2. M-step
+
+    
+
+
+
+
+
+
+## Next steps
+
+
+*Hello Sir, *
+
+*Apologies for my inconsistency when it comes to reporting.*
+
+*I have not yet thoroughly thought about how I could express the SISM model similar to how the GDINA model is written (in terms of $\delta$ parameters). I feel that I have to, since it is mentioned that the estimation procedure is the same as the GDINA model. For the $M_j$ strategies, I assume that the adjustment will be on the coding side. But, to be able to reflect MS (variable $M_j$) in the SISM IRF, I have to express the equation in terms of $\delta$, as mentioned. This is how MS was done for DINA, DINO, and ACDM.*
+
+*Please let me know if there are errors or confusions created in the content above and if you have suggestions.*
+
+*Thank you!*
+
+*-Shaine*
